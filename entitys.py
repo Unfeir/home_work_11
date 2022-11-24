@@ -72,19 +72,21 @@ class Record:  # який відповідає за логіку додаван�
 
 class Field:  # який буде батьківським для всіх полів, у ньому потім реалізуємо логіку загальну для всіх полів.
     def __init__(self, value):
-        self.value = value
-        
-
-class Birthday(Field):
-    def __init__(self, value):
         self.__value = value
         self.value = value
-
+        
     @property
     def value(self):
         return self.__value
-
+    
     @value.setter
+    def value(self, value):
+        self.__value = value
+
+
+class Birthday(Field):
+       
+    @Field.value.setter
     def value(self, value):
         if re.search(r"\b\d{2}[.]\d{2}[.]\d{4}", value):
             value_splitted = value.split(".")
@@ -101,15 +103,8 @@ class Name(Field):
 
 # необов'язкове поле з телефоном та таких один запис (Record) може містити кілька.
 class Phone(Field):
-    def __init__(self, value):
-        self.__value = value
-        self.value = value
-
-    @property
-    def value(self):
-        return self.__value
-
-    @value.setter
+   
+    @Field.value.setter
     def value(self, value):
         analize = re.search(r"\+380\d{9}\b", value)
         if analize:
